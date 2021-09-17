@@ -15,9 +15,9 @@ namespace EcoLease_API.Controllers
     {
         private readonly IVehicleRepository _vehicleRepository;
 
-        public VehiclesController(IVehicleRepository vehicleRepo)
+        public VehiclesController(IVehicleRepository vehicleRepository)
         {
-            _vehicleRepository = vehicleRepo;
+            _vehicleRepository = vehicleRepository;
         }
 
 
