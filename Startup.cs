@@ -28,10 +28,11 @@ namespace EcoLease_API
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddScoped<IVehicleRepository, VehicleRepository>();
+            services.AddScoped<IUserRepository, UserRepository>();
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "VehicleAPI", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "EcoLeaseAPI", Version = "v1" });
             });
         }
 
@@ -42,7 +43,7 @@ namespace EcoLease_API
             {
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "VehicleAPI v1"));
+                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "EcoLeaseAPI v1"));
             }
 
             app.UseHttpsRedirection();
