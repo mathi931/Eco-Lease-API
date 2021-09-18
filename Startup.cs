@@ -29,6 +29,7 @@ namespace EcoLease_API
         {
             services.AddScoped<IVehicleRepository, VehicleRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IRequestRepository, RequestRepository>();
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
