@@ -32,8 +32,7 @@ namespace EcoLease_API
                 options.AddDefaultPolicy(
                     builder =>
                     {
-                        builder.WithOrigins("http://127.0.0.1:5500",
-                                            "http://www.contoso.com");
+                        builder.WithOrigins("http://127.0.0.1:5500");
                     });
             });
             services.AddScoped<IVehicleRepository, VehicleRepository>();
