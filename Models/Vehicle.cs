@@ -14,6 +14,7 @@ namespace EcoLease_API.Models
         public string PlateNo { get; set; }
         public int Km { get; set; }
         public string Notes { get; set; }
+        public string Img { get; set; }
         public string Status { get; set; }
 
         public override string ToString()
