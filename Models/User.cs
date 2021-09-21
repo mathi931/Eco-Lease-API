@@ -7,6 +7,14 @@ namespace EcoLease_API.Models
 {
     public class User
     {
+        public User(int uID, string firstName, string lastName, DateTime dateOfBirth)
+        {
+            UID = uID;
+            FirstName = firstName;
+            LastName = lastName;
+            DateOfBirth = dateOfBirth;
+        }
+
         public int UID { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }

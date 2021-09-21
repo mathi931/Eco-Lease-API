@@ -19,11 +19,12 @@ namespace EcoLease_API.Repositories
 
         public async Task<User> Create(User user)
         {
-            var query = @"INSERT INTO Users(firstName, lastName, dateOfBirth) VALUES(@firstName, @lastName, @dateOfBirth)";
+            var query = @"INSERT INTO Users(firstName, lastName, dateOfBirth) VALUES(@firstName, @lastName, @dateOfBirth); 
+                          SELECT SCOPE_IDENTITY;";
 
             using (var connection = new SqlConnection(_connectionString))
             {
-                await connection.ExecuteAsync(query, user);
+                user.UID = await connection.ExecuteScalarAsync<int>(query, user);
                 return user;
             }
         }
