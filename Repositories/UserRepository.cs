@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Threading.Tasks;
 using Dapper;
+using System;
 
 namespace EcoLease_API.Repositories
 {
@@ -20,12 +21,20 @@ namespace EcoLease_API.Repositories
         public async Task<User> Create(User user)
         {
             var query = @"INSERT INTO Users(firstName, lastName, dateOfBirth) VALUES(@firstName, @lastName, @dateOfBirth); 
-                          SELECT SCOPE_IDENTITY;";
+                          SELECT SCOPE_IDENTITY();";
 
             using (var connection = new SqlConnection(_connectionString))
             {
-                user.UID = await connection.ExecuteScalarAsync<int>(query, user);
-                return user;
+                try
+                {
+                    user.UID = await connection.ExecuteScalarAsync<int>(query, user);
+                    return user;
+                }
+                catch (SqlException exp)
+                {
+                    //throws an error if the data access is unsucsessfull
+                    throw new InvalidOperationException("Data could not be create", exp);
+                }
             }
         }
     }
