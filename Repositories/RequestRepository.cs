@@ -21,26 +21,14 @@ namespace EcoLease_API.Repositories
 
         public async Task<Request> Create(Request request)
         {
-            var getRequestID = @"SELECT IDENT_CURRENT('Requests')";
-
-            var query = @"INSERT INTO Requests(userID, vehicleID, statusID) VALUES(@userID, @vehicleID, @statusID)";
+            var query = @"INSERT INTO Requests(userID, vehicleID) VALUES(@userID, @vehicleID); SELECT SCOPE_IDENTITY()";
 
             using(var con = new SqlConnection(_connectionString))
             {
                 try
                 {
-
-                    await con.ExecuteAsync(query, request);
-
-                    var rID = await con.ExecuteAsync(getRequestID);
-
-                    return new Request{
-                        RID = rID,
-                        UserID = request.UserID,
-                        VehicleID = request.VehicleID,
-                        StatusID = request.StatusID
-                    };
-
+                    request.RID =  await con.ExecuteScalarAsync<int>(query, request);
+                    return request;
                 }
                 catch (SqlException exp)
                 {

@@ -7,6 +7,12 @@ namespace EcoLease_API.Models
 {
     public class Request
     {
+        public Request(int userID, int vehicleID)
+        {
+            UserID = userID;
+            VehicleID = vehicleID;
+        }
+
         public int RID { get; set; }
         public int UserID { get; set; }
         public int VehicleID { get; set; }
