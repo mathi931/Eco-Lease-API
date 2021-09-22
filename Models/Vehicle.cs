@@ -10,7 +10,7 @@ namespace EcoLease_API.Models
         public int VId { get; set; }
         public string Make { get; set; }
         public string Model { get; set; }
-        public DateTime Registered { get; set; }
+        public int Registered { get; set; }
         public string PlateNo { get; set; }
         public int Km { get; set; }
         public string Notes { get; set; }
