@@ -21,7 +21,7 @@ namespace EcoLease_API.Repositories
 
         public async Task<Request> Create(Request request)
         {
-            var query = @"INSERT INTO Requests(userID, vehicleID) VALUES(@userID, @vehicleID); SELECT SCOPE_IDENTITY()";
+            var query = @"INSERT INTO Requests(leaseBegin, leaseLast, userID, vehicleID) VALUES(@leaseBegin, @leaseLast, @userID, @vehicleID); SELECT SCOPE_IDENTITY()";
 
             using(var con = new SqlConnection(_connectionString))
             {
