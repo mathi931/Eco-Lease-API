@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace EcoLease_API.Repositories
 {
-    public interface IUserRepository
+    public interface ICustomerRepository
     {
-        Task<User> Create(User user);
+        Task<Customer> Create(Customer user);
     }
 }

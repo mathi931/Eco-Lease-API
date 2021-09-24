@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace EcoLease_API.Repositories
 {
-    public interface IRequestRepository
+    public interface IReservationRepository
     {
-        public Task<Request> Create(Request request);
+        public Task<Reservation> Create(Reservation request);
     }
 }

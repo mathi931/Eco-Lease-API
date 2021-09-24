@@ -9,19 +9,19 @@ using System.Threading.Tasks;
 
 namespace EcoLease_API.Repositories
 {
-    public class RequestRepository : IRequestRepository
+    public class ReservationRepository : IReservationRepository
     {
         private readonly string _connectionString;
 
-        public RequestRepository(IConfiguration configuration)
+        public ReservationRepository(IConfiguration configuration)
         {
             _connectionString = configuration.GetConnectionString("EcoLeaseDB");
         }
 
 
-        public async Task<Request> Create(Request request)
+        public async Task<Reservation> Create(Reservation request)
         {
-            var query = @"INSERT INTO Requests(leaseBegin, leaseLast, userID, vehicleID) VALUES(@leaseBegin, @leaseLast, @userID, @vehicleID); SELECT SCOPE_IDENTITY()";
+            var query = @"INSERT INTO Reservations(leaseBegin, leaseLast, customerID, vehicleID) VALUES(@leaseBegin, @leaseLast, @customerID, @vehicleID); SELECT SCOPE_IDENTITY()";
 
             using(var con = new SqlConnection(_connectionString))
             {

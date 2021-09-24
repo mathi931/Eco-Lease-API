@@ -38,8 +38,8 @@ namespace EcoLease_API
                     });
             });
             services.AddScoped<IVehicleRepository, VehicleRepository>();
-            services.AddScoped<IUserRepository, UserRepository>();
-            services.AddScoped<IRequestRepository, RequestRepository>();
+            services.AddScoped<ICustomerRepository, CustomerRepository>();
+            services.AddScoped<IReservationRepository, ReservationRepository>();
             services.AddControllers().AddNewtonsoftJson();
             services.AddSwaggerGen(c =>
             {

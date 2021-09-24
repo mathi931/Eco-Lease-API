@@ -5,20 +5,20 @@ using System.Threading.Tasks;
 
 namespace EcoLease_API.Models
 {
-    public class Request
+    public class Reservation
     {
-        public Request(DateTime leaseBegin, DateTime leaseLast, int userID, int vehicleID)
+        public Reservation(DateTime leaseBegin, DateTime leaseLast, int customerID, int vehicleID)
         {
             LeaseBegin = leaseBegin;
             LeaseLast = leaseLast;
-            UserID = userID;
+            CustomerID = customerID;
             VehicleID = vehicleID;
         }
 
         public int RID { get; set; }
         public DateTime LeaseBegin { get; set; }
         public DateTime LeaseLast { get; set; }
-        public int UserID { get; set; }
+        public int CustomerID { get; set; }
         public int VehicleID { get; set; }
         public int StatusID { get; set; }
     }

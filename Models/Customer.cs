@@ -5,17 +5,17 @@ using System.Threading.Tasks;
 
 namespace EcoLease_API.Models
 {
-    public class User
+    public class Customer
     {
-        public User(int uID, string firstName, string lastName, DateTime dateOfBirth)
+        public Customer(int id, string firstName, string lastName, DateTime dateOfBirth)
         {
-            UID = uID;
+            CID = id;
             FirstName = firstName;
             LastName = lastName;
             DateOfBirth = dateOfBirth;
         }
 
-        public int UID { get; set; }
+        public int CID { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public DateTime DateOfBirth { get; set; }

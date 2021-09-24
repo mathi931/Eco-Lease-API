@@ -11,19 +11,19 @@ namespace EcoLease_API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class UserController : ControllerBase
+    public class CustomerController : ControllerBase
     {
-        private readonly IUserRepository _userRepository;
+        private readonly ICustomerRepository _customerRepository;
 
-        public UserController(IUserRepository userRepository)
+        public CustomerController(ICustomerRepository userRepository)
         {
-            _userRepository = userRepository;
+            _customerRepository = userRepository;
         }
 
         [HttpPost]
-        public async Task<ActionResult<User>>PostUser([FromBody] User user)
+        public async Task<ActionResult<Customer>>PostUser([FromBody] Customer user)
         {
-            var newUser = await _userRepository.Create(user);
+            var newUser = await _customerRepository.Create(user);
             return newUser;
         }
     }

@@ -8,26 +8,25 @@ using System;
 
 namespace EcoLease_API.Repositories
 {
-    public class UserRepository : IUserRepository
+    public class CustomerRepository : ICustomerRepository
     {
         private readonly string _connectionString;
 
-        public UserRepository(IConfiguration configuration)
+        public CustomerRepository(IConfiguration configuration)
         {
             _connectionString = configuration.GetConnectionString("EcoLeaseDB");
         }
 
-
-        public async Task<User> Create(User user)
+        public async Task<Customer> Create(Customer user)
         {
-            var query = @"INSERT INTO Users(firstName, lastName, dateOfBirth) VALUES(@firstName, @lastName, @dateOfBirth); 
+            var query = @"INSERT INTO Customers(firstName, lastName, dateOfBirth) VALUES(@firstName, @lastName, @dateOfBirth); 
                           SELECT SCOPE_IDENTITY();";
 
             using (var connection = new SqlConnection(_connectionString))
             {
                 try
                 {
-                    user.UID = await connection.ExecuteScalarAsync<int>(query, user);
+                    user.CID = await connection.ExecuteScalarAsync<int>(query, user);
                     return user;
                 }
                 catch (SqlException exp)
