@@ -35,15 +35,10 @@ namespace EcoLease_API.Controllers
         }
 
         [HttpPut]
-        public async Task<ActionResult> PutVehicle(int id, [FromBody] Vehicle vehicle)
+        public async Task<ActionResult> PutVehicle(int id)
         {
-            if (id != vehicle.VId)
-            {
-                return BadRequest();
-            }
-
-            await _vehicleRepository.Reserve(vehicle);
-            return NoContent();
+            await _vehicleRepository.Reserve(id);
+            return StatusCode(200);
         }
 
     }

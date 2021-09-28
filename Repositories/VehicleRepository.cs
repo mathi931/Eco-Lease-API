@@ -70,7 +70,7 @@ namespace EcoLease_API.Repositories
             }
         }
 
-        public async Task Reserve(Vehicle vehicle)
+        public async Task Reserve(int id)
         {
             //updates the status of reserved vehicle
             string query = @"UPDATE Vehicles
@@ -83,7 +83,7 @@ namespace EcoLease_API.Repositories
                 using (var connection = new SqlConnection(_connectionString))
                 {
                     //runs the query
-                    await connection.ExecuteAsync(query, vehicle);
+                    await connection.ExecuteAsync(query, new { vID = id});
                 }
             }
             catch (SqlException exp)
