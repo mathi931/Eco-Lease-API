@@ -10,5 +10,6 @@ namespace EcoLease_API.Repositories
     {
         Task<IEnumerable<Vehicle>> Get();
         Task<Vehicle> Get(int id);
+        Task Update(Vehicle vehicle);
     }
 }

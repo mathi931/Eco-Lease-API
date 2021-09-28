@@ -69,5 +69,28 @@ namespace EcoLease_API.Repositories
                 throw new InvalidOperationException("Data could not be delete", exp);
             }
         }
+
+        public async Task Reserve(Vehicle vehicle)
+        {
+            //updates the status of reserved vehicle
+            string query = @"UPDATE Vehicles
+                             SET statusID = (SELECT sID FROM Statuses WHERE name = 'Reserved')
+                             WHERE vID = @vID";
+
+            try
+            {
+                //open connection in try-catch with DataAccesHelper class to avoid connection string to be shown
+                using (var connection = new SqlConnection(_connectionString))
+                {
+                    //runs the query
+                    await connection.ExecuteAsync(query, vehicle);
+                }
+            }
+            catch (SqlException exp)
+            {
+                //throws an error if the data access is unsucsessfull
+                throw new InvalidOperationException("Data could not be delete", exp);
+            }
+        }
     }
 }
