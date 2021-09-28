@@ -17,9 +17,10 @@ namespace EcoLease_API.Repositories
             _connectionString = configuration.GetConnectionString("EcoLeaseDB");
         }
 
+
         public async Task<Customer> Create(Customer user)
         {
-            var query = @"INSERT INTO Customers(firstName, lastName, dateOfBirth) VALUES(@firstName, @lastName, @dateOfBirth); 
+            var query = @"INSERT INTO Customers(firstName, lastName, dateOfBirth, email, phoneNo) VALUES(@firstName, @lastName, @dateOfBirth, @email, @phoneNo); 
                           SELECT SCOPE_IDENTITY();";
 
             using (var connection = new SqlConnection(_connectionString))
