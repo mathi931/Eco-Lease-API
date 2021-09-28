@@ -23,7 +23,7 @@ namespace EcoLease_API.Repositories
         public async Task<IEnumerable<Vehicle>> Get()
         {
             //sql query for get all
-            string query = @"SELECT v.vID, v.make, v.model, v.registered, v.plateNo, v.km, v.notes, v.img, v.pricem, s.name AS status
+            string query = @"SELECT v.vID, v.make, v.model, v.registered, v.plateNo, v.km, v.notes, v.img, v.price, s.name AS status
                              FROM Vehicles v 
                              LEFT JOIN Statuses s
                              ON v.statusID = s.sID";
