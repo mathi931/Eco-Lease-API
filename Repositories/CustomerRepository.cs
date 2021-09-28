@@ -20,7 +20,7 @@ namespace EcoLease_API.Repositories
 
         public async Task<Customer> Create(Customer user)
         {
-            var query = @"INSERT INTO Customers(firstName, lastName, dateOfBirth, email, phoneNo) VALUES(@firstName, @lastName, @dateOfBirth, @email, @phoneNo); 
+            var query = @"INSERT INTO Customers(firstName, lastName, email, phoneNo, dateOfBirth) VALUES(@firstName, @lastName, @email, @phoneNo, @dateOfBirth); 
                           SELECT SCOPE_IDENTITY();";
 
             using (var connection = new SqlConnection(_connectionString))

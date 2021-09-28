@@ -24,7 +24,7 @@ namespace EcoLease_API.Controllers
         public async Task<ActionResult<Reservation>>PostRequest([FromBody] Reservation request)
         {
             var newRequest = await _reservationRepository.Create(request);
-            return request;
+            return newRequest;
         }
     }
 }
