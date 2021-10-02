@@ -20,26 +20,70 @@ namespace EcoLease_API.Controllers
             _vehicleRepository = vehicleRepository;
         }
 
-
+        // GET api/Vehicles
         [HttpGet]
         public async Task<IEnumerable<Vehicle>> GetVehicles()
         {
-            return await _vehicleRepository.Get();
+            return await _vehicleRepository.GetAll();
         }
 
-        // GET api/<VehicleController>/5
+        // GET api/Vehicles/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Vehicle>> GetVehicle(int id)
         {
-            return await _vehicleRepository.Get(id);
+            return await _vehicleRepository.GetByID(id);
         }
 
-        [HttpPut]
-        public async Task<ActionResult> PutVehicle(int id)
+        // POST api/Vehicles
+        [HttpPost]
+        public async Task<ActionResult<Vehicle>>InsertVehicle([FromBody] Vehicle vehicle)
         {
-            await _vehicleRepository.Reserve(id);
-            return StatusCode(200);
+            var newVehicle = await _vehicleRepository.Insert(vehicle);
+            return CreatedAtAction(nameof(GetVehicle), new { id = newVehicle.VId }, newVehicle);
         }
 
+        // PUT api/Vehicles
+        [HttpPut]
+        public async Task<ActionResult> UpdateVehicle(int id, [FromBody] Vehicle vehicle)
+        {
+            if (id != vehicle.VId)
+            {
+                return BadRequest();
+            }
+     
+            await _vehicleRepository.Update(vehicle);
+
+            return NoContent();
+        }
+
+        // PATCH api/Vehicles
+        [HttpPatch]
+        public async Task<ActionResult> UpdateVehicleStatus(int id, [FromBody] Vehicle vehicle)
+        {
+            if (id != vehicle.VId)
+            {
+                return BadRequest();
+            }
+
+            await _vehicleRepository.UpdateStatus(vehicle);
+
+            return NoContent();
+        }
+
+        // DELETE api/Vehicles
+        [HttpDelete]
+        public async Task<ActionResult> Delete (int id)
+        {
+            var vehicleToDelete = await _vehicleRepository.GetByID(id);
+            if(vehicleToDelete == null)
+            {
+                return NotFound();
+            }
+            else
+            {
+                await _vehicleRepository.Remove(vehicleToDelete.VId);
+                return NoContent();
+            }
+        }
     }
 }

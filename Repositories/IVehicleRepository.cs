@@ -8,8 +8,12 @@ namespace EcoLease_API.Repositories
 {
     public interface IVehicleRepository
     {
-        Task<IEnumerable<Vehicle>> Get();
-        Task<Vehicle> Get(int id);
-        Task Reserve(int id);
+        Task<IEnumerable<Vehicle>> GetAll();
+        Task<Vehicle> GetByID(int id);
+        Task<Vehicle> Insert(Vehicle vehicle);
+        Task Update(Vehicle vehicle);
+        Task UpdateStatus(Vehicle vehicle);
+        Task Remove(int id);
+
     }
 }

@@ -12,15 +12,15 @@ namespace EcoLease_API.Repositories
 {
     public class VehicleRepository : IVehicleRepository
     {
-        //
+        //private connection string variable
         private readonly string _connectionString;
         public VehicleRepository(IConfiguration configuration)
         {
             _connectionString = configuration.GetConnectionString("EcoLeaseDB");
         }
 
-        //get all
-        public async Task<IEnumerable<Vehicle>> Get()
+        //gets all
+        public async Task<IEnumerable<Vehicle>> GetAll()
         {
             //sql query for get all
             string query = @"SELECT v.vID, v.make, v.model, v.registered, v.plateNo, v.km, v.notes, v.img, v.price, s.name AS status
@@ -45,8 +45,8 @@ namespace EcoLease_API.Repositories
             }
         }
 
-        //get one by id
-        public async Task<Vehicle> Get(int id)
+        //gets one by id
+        public async Task<Vehicle> GetByID(int id)
         {
             //sql query for get a vehicle by ID
             string query = @"SELECT v.vID, v.make, v.model, v.registered, v.plateNo, v.km, v.notes, v.img, v.price, s.name AS status
@@ -70,12 +70,11 @@ namespace EcoLease_API.Repositories
             }
         }
 
-        public async Task Reserve(int id)
+        //creates one
+        public async Task<Vehicle> Insert(Vehicle vehicle)
         {
-            //updates the status of reserved vehicle
-            string query = @"UPDATE Vehicles
-                             SET statusID = (SELECT sID FROM Statuses WHERE name = 'Reserved')
-                             WHERE vID = @vID";
+            //sql query for insert the new vehicle
+            string query = @"INSERT INTO Vehicles (make, model, registered, plateNo, km, notes, img, price, statusID) values(@make, @model, @registered, @plateNo, @km, @notes, @img, @price, (SELECT sID FROM Statuses WHERE name = '@status'))";
 
             try
             {
@@ -83,10 +82,75 @@ namespace EcoLease_API.Repositories
                 using (var connection = new SqlConnection(_connectionString))
                 {
                     //runs the query
-                    await connection.ExecuteAsync(query, new { vID = id});
+                    return await connection.ExecuteScalarAsync<Vehicle>(query, vehicle);
+                }
+            }
+            catch(Exception exp)
+            {
+                //throws an error if the data access is unsucsessfull
+                throw new InvalidOperationException("Data could not be insert", exp);
+            }
+        }
+
+        //updates the status property
+        public async Task UpdateStatus(Vehicle vehicle)
+        {
+            //updates the status of reserved vehicle
+            string query = @"UPDATE Vehicles SET statusID = (SELECT sID FROM Statuses WHERE name = '@status') WHERE vID = @VId";
+
+            try
+            {
+                //open connection in try-catch with DataAccesHelper class to avoid connection string to be shown
+                using (var connection = new SqlConnection(_connectionString))
+                {
+                    //runs the query
+                    await connection.ExecuteAsync(query, vehicle);
                 }
             }
             catch (SqlException exp)
+            {
+                //throws an error if the data access is unsucsessfull
+                throw new InvalidOperationException("Data could not be update", exp);
+            }
+        }
+
+        //updates one
+        public async Task Update(Vehicle vehicle)
+        {
+            //updates the status of reserved vehicle
+            string query = @"UPDATE Vehicles SET make = @make, model = @model, registered = @registered, plateNo = @plateNo, km = @km, notes = @notes, img = @img, price = @price, statusID = (SELECT sID FROM Statuses WHERE name = '@status') WHERE vID = @VId";
+
+            try
+            {
+                //open connection in try-catch with DataAccesHelper class to avoid connection string to be shown
+                using (var connection = new SqlConnection(_connectionString))
+                {
+                    //runs the query
+                    await connection.ExecuteAsync(query, vehicle);
+                }
+            }
+            catch (SqlException exp)
+            {
+                //throws an error if the data access is unsucsessfull
+                throw new InvalidOperationException("Data could not be update", exp);
+            }
+        }
+
+        //removes one
+        public async Task Remove(int id)
+        {
+            //query for delete vehicle by ID
+            string query = @"DELETE FROM Vehicles WHERE vID = @id";
+
+            try
+            {
+                using (var connection = new SqlConnection(_connectionString))
+                {
+                    //runs the query
+                    await connection.ExecuteScalarAsync(query, new { id = id});
+                }
+            }
+            catch (Exception exp)
             {
                 //throws an error if the data access is unsucsessfull
                 throw new InvalidOperationException("Data could not be delete", exp);
