@@ -8,6 +8,10 @@ namespace EcoLease_API.Repositories
 {
     public interface ICustomerRepository
     {
-        Task<Customer> Create(Customer user);
+        Task<IEnumerable<Customer>> GetAll();
+        Task<Customer> GetByID(int id);
+        Task<Customer> Insert(Customer user);
+        Task Update(Customer customer);
+        Task Remove(int id);
     }
 }
