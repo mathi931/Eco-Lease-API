@@ -7,6 +7,23 @@ namespace EcoLease_API.Models
 {
     public class Vehicle
     {
+        public Vehicle(int vId, string make, string model, int registered, string plateNo, int km, string notes, string img, int price, string status)
+        {
+            VId = vId;
+            Make = make;
+            Model = model;
+            Registered = registered;
+            PlateNo = plateNo;
+            Km = km;
+            Notes = notes;
+            Img = img;
+            Price = price;
+            Status = status;
+        }
+        public Vehicle()
+        {
+
+        }
         public int VId { get; set; }
         public string Make { get; set; }
         public string Model { get; set; }

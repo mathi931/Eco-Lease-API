@@ -38,7 +38,7 @@ namespace EcoLease_API.Controllers
         [HttpPost]
         public async Task<ActionResult<Vehicle>>InsertVehicle([FromBody] Vehicle vehicle)
         {
-            var newVehicle = await _vehicleRepository.Insert(vehicle);
+            var newVehicle = await _vehicleRepository.Insert(vehicle) as Vehicle;
             return CreatedAtAction(nameof(GetVehicle), new { id = newVehicle.VId }, newVehicle);
         }
 
@@ -71,7 +71,7 @@ namespace EcoLease_API.Controllers
         }
 
         // DELETE api/Vehicles
-        [HttpDelete]
+        [HttpDelete("{id}")]
         public async Task<ActionResult> Delete (int id)
         {
             var vehicleToDelete = await _vehicleRepository.GetByID(id);

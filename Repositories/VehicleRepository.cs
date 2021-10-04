@@ -74,15 +74,20 @@ namespace EcoLease_API.Repositories
         public async Task<Vehicle> Insert(Vehicle vehicle)
         {
             //sql query for insert the new vehicle
-            string query = @"INSERT INTO Vehicles (make, model, registered, plateNo, km, notes, img, price, statusID) values(@make, @model, @registered, @plateNo, @km, @notes, @img, @price, (SELECT sID FROM Statuses WHERE name = '@status'))";
-
+            string query = @"INSERT INTO Vehicles (make, model, registered, plateNo, km, notes, img, price, statusID) values(@make, @model, @registered, @plateNo, @km, @notes, @img, @price, (SELECT sID FROM Statuses WHERE name = @status))
+                  SELECT IDENT_CURRENT('Vehicles') 
+                ";
+            //
             try
             {
                 //open connection in try-catch with DataAccesHelper class to avoid connection string to be shown
                 using (var connection = new SqlConnection(_connectionString))
                 {
                     //runs the query
-                    return await connection.ExecuteScalarAsync<Vehicle>(query, vehicle);
+                    vehicle.VId = await connection.ExecuteScalarAsync<int>(query, vehicle);
+                    //var v =  new Vehicle(id, vehicle.Make,vehicle.Model,vehicle.Registered, vehicle.PlateNo, vehicle.Km, vehicle.Notes, vehicle.Img,vehicle.Price, vehicle.Status);
+
+                    return vehicle;
                 }
             }
             catch(Exception exp)
@@ -92,11 +97,12 @@ namespace EcoLease_API.Repositories
             }
         }
 
-        //updates the status property
-        public async Task UpdateStatus(Vehicle vehicle)
+        //updates one
+        public async Task Update(Vehicle vehicle)
         {
             //updates the status of reserved vehicle
-            string query = @"UPDATE Vehicles SET statusID = (SELECT sID FROM Statuses WHERE name = '@status') WHERE vID = @VId";
+            string query = @"UPDATE Vehicles SET make = @make, model = @model, registered = @registered, plateNo = @plateNo, km = @km, notes = @notes, img = @img, price = @price, statusID = (SELECT sID FROM Statuses WHERE name = @status) WHERE vID = @VId"
+               ;
 
             try
             {
@@ -114,11 +120,11 @@ namespace EcoLease_API.Repositories
             }
         }
 
-        //updates one
-        public async Task Update(Vehicle vehicle)
+        //updates the status property
+        public async Task UpdateStatus(Vehicle vehicle)
         {
             //updates the status of reserved vehicle
-            string query = @"UPDATE Vehicles SET make = @make, model = @model, registered = @registered, plateNo = @plateNo, km = @km, notes = @notes, img = @img, price = @price, statusID = (SELECT sID FROM Statuses WHERE name = '@status') WHERE vID = @VId";
+            string query = @"UPDATE Vehicles SET statusID = (SELECT sID FROM Statuses WHERE name = @status) WHERE vID = @VId";
 
             try
             {
