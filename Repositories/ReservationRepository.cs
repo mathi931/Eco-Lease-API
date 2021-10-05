@@ -11,31 +11,163 @@ namespace EcoLease_API.Repositories
 {
     public class ReservationRepository : IReservationRepository
     {
+        //private connection string variable
         private readonly string _connectionString;
-
         public ReservationRepository(IConfiguration configuration)
         {
             _connectionString = configuration.GetConnectionString("EcoLeaseDB");
         }
 
-
-        public async Task<Reservation> Create(Reservation request)
+        //gets all
+        public async Task<IEnumerable<Reservation>> GetAll()
         {
-            var query = @"INSERT INTO Reservations(leaseBegin, leaseLast, customerID, vehicleID) VALUES(@leaseBegin, @leaseLast, @customerID, @vehicleID); SELECT SCOPE_IDENTITY()";
+            //sql query for get all reservations
+            string query = @"SELECT re.rID, re.leaseBegin, re.leaseLast, s.name as status, c.cID, c.firstName, c.lastName, c.dateOfBirth, c.email, c.phoneNo, v.vID, v.make, v.model, v.registered, v.plateNo, v.km, v.notes, v.img, v.price, st.name as status
+                            FROM Reservations re
+                            LEFT JOIN Statuses s ON re.statusID = s.sID
+                            INNER JOIN Customers c ON re.customerID = c.cID
+                            INNER JOIN Vehicles v ON re.vehicleID = v.vID
+                            INNER JOIN Statuses st ON v.statusID = st.sID;";
 
-            using(var con = new SqlConnection(_connectionString))
+            try
             {
-                try
+                //connects
+                using (var connection = new SqlConnection(_connectionString))
                 {
-                    request.RID =  await con.ExecuteScalarAsync<int>(query, request);
-                    return request;
+                    //runs the query with mapping: the query result contains 3 objects, with mapping it returns only the Request objects as a list what contains the other 2 objects
+                    //splitOn where the other two table begins (ID`s) -> this slices the query so able to map the slices to different objects
+                    var reservations = await connection.QueryAsync<Reservation, Customer, Vehicle, Reservation>(query, (reservation, customer, vehicle) =>
+                    {
+                        reservation.Customer = customer;
+                        reservation.Vehicle = vehicle;
+                        return reservation;
+                    },
+                    splitOn: "cID, vID");
+                    return reservations.ToList();
                 }
-                catch (SqlException exp)
-                {
-                    //throws an error if the data access is unsucsessfull
-                    throw new InvalidOperationException("Data could not be create", exp);
-                }
+            }
+            catch (SqlException exp)
+            {
+                //throws an error if the data access is unsucsessfull
+                throw new InvalidOperationException("Data could not be read", exp);
+            }
+        }
 
+        //gets one by id
+        public async Task<Reservation> GetByID(int id)
+        {
+            //query to get the reservation object
+            string query = @"SELECT re.rID, re.leaseBegin, re.leaseLast, s.name as status, c.cID, c.firstName, c.lastName, c.dateOfBirth, c.email, c.phoneNo, v.vID, v.make, v.model, v.registered, v.plateNo, v.km, v.notes, v.img, v.price, st.name as status
+                            FROM Reservations re
+                            LEFT JOIN Statuses s ON re.statusID = s.sID
+                            INNER JOIN Customers c ON re.customerID = c.cID
+                            INNER JOIN Vehicles v ON re.vehicleID = v.vID
+                            INNER JOIN Statuses st ON v.statusID = st.sID
+                            WHERE re.rID = @id;";
+            try
+            {
+                //connects
+                using (var connection = new SqlConnection(_connectionString))
+                {
+                    //runs the query with mapping: the result contains 3 types, with mapping it returns the Reservation with the Vehicle and Customer type properties
+                    //splitOn where the other two table begins (ID`s) -> this slices the query so able to map the slices to different objects
+                    var reservations =  await connection.QueryAsync<Reservation, Customer, Vehicle, Reservation>(query, (reservation, customer, vehicle) =>
+                    {
+                        reservation.Customer = customer;
+                        reservation.Vehicle = vehicle;
+                        return reservation;
+                    },
+                        param: new { id = id},
+                        splitOn: "cID, vID");
+                    return reservations.FirstOrDefault();
+                }
+            }
+            catch (SqlException exp)
+            {
+                //throws an error if the data access is unsucsessfull
+                throw new InvalidOperationException("Data could not be delete", exp);
+            }
+        }
+
+        //creates one
+        public async Task<Reservation> Insert(Reservation reservation)
+        {
+            //query for create a new reservation
+            var query = @"INSERT INTO Reservations (leaseBegin, leaseLast, statusID, customerID, vehicleID) values(@lBegin, @lLast, (SELECT sID FROM Statuses WHERE name = @status), @customerID, @vehicleID); 
+                          SELECT SCOPE_IDENTITY()";
+
+            try
+            {
+                //connect
+                using (var con = new SqlConnection(_connectionString))
+                { 
+                    //runs the query what returns the new reservations ID
+                    //and the function returns the reservation with the new ID
+                    reservation.RId =  await con.ExecuteScalarAsync<int>(query, reservation);
+                    return reservation;
+                }
+            }
+            catch (SqlException exp)
+            {
+                //throws an error if the data access is unsucsessfull
+                throw new InvalidOperationException("Data could not be create", exp);
+            }
+        }
+
+        //updates one
+        public async Task Update(Reservation reservation)
+        {
+            //query for update dates, status, vehicle id (customer can not change)
+            string query = @"UPDATE Reservations
+                            SET statusID = (SELECT sID FROM Statuses WHERE name = @status),
+	                            vehicleID = @vID,
+                                leaseBegin = @lBegin,
+                                leaseLast = @lLast
+                            WHERE rID = @rID;";
+
+            try
+            {
+                //connects
+                using (var connection = new SqlConnection(_connectionString))
+                {
+                    //runs the query with a new object what contains the needed variables
+                    var a = new
+                    {
+                        status = reservation.Status,
+                        vID = reservation.Vehicle.VId,
+                        lBegin = reservation.LeaseBegin,
+                        lLast = reservation.LeaseLast,
+                        rID = reservation.RId
+                    };
+                    await connection.ExecuteScalarAsync(query, a);
+                }
+            }
+            catch (SqlException exp)
+            {
+                //throws an error if the data access is unsucsessfull
+                throw new InvalidOperationException("Data could not be update", exp);
+            }
+        }
+
+        //removes one
+        public async Task Remove(int id)
+        {
+            //query for delete reservation by ID
+            string query = @"DELETE FROM Reservations WHERE rID = @id";
+
+            try
+            {
+                //connects
+                using (var connection = new SqlConnection(_connectionString))
+                {
+                    //runs the query
+                    await connection.ExecuteScalarAsync(query, new { id = id });
+                }
+            }
+            catch (Exception exp)
+            {
+                //throws an error if the data access is unsucsessfull
+                throw new InvalidOperationException("Data could not be delete", exp);
             }
         }
     }

@@ -8,6 +8,11 @@ namespace EcoLease_API.Repositories
 {
     public interface IReservationRepository
     {
-        public Task<Reservation> Create(Reservation request);
+        Task<IEnumerable<Reservation>> GetAll();
+        Task<Reservation> GetByID(int id);
+        Task<Reservation> Insert(Reservation reservation);
+        Task Update(Reservation reservation);
+        Task Remove(int id);
+
     }
 }
