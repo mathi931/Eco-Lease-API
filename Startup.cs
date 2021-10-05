@@ -41,6 +41,7 @@ namespace EcoLease_API
             services.AddScoped<ICustomerRepository, CustomerRepository>();
             services.AddScoped<IReservationRepository, ReservationRepository>();
             services.AddScoped<IStatusRepository, StatusRepository>();
+            services.AddScoped<IAgreementRepository, AgreementRepository>();
             services.AddControllers().AddNewtonsoftJson();
             services.AddSwaggerGen(c =>
             {
