@@ -59,7 +59,7 @@ namespace EcoLease_API.Controllers
 
         // DELETE api/Customers
         [HttpDelete("{id}")]
-        public async Task<ActionResult> Delete(int id)
+        public async Task<ActionResult> RemoveCustomer(int id)
         {
             var customerToDelete = await _customerRepository.GetByID(id);
             if (customerToDelete == null)

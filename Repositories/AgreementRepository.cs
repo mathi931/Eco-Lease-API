@@ -18,18 +18,19 @@ namespace EcoLease_API.Repositories
             _connectionString = configuration.GetConnectionString("EcoLeaseDB");
         }
 
-        //gets a filename by ID
-        public async Task<Agreement> GetByID(int id)
 
-        {   //get fileName
-            var query = @"SELECT a.fileName from Agreements as a WHERE a.reservationID = @id";
+        //gets a filename by ID
+        public async Task<Agreement> GetByID(int reservationID)
+        {
+            //gets reservationID
+            var query = @"SELECT aID, fileName FROM Agreements WHERE reservationID = @ID";
+
             try
             {
-                //open connection in try-catch with DataAccesHelper class to avoid connection string to be shown
+                //connects
                 using (var connection = new SqlConnection(_connectionString))
                 {
-                    //runs the query
-                    return await connection.QueryFirstOrDefaultAsync<Agreement>(query, new { id = id });
+                    return await connection.QueryFirstOrDefaultAsync<Agreement>(query, new { ID = reservationID });
                 }
             }
             catch (SqlException exp)
@@ -55,7 +56,7 @@ namespace EcoLease_API.Repositories
                     agreement.AID = await connection.ExecuteScalarAsync<int>(query, new
                     {
                         doc = agreement.FileName,
-                        rID = agreement.Reservation.RId
+                        rID = agreement.Reservation.RID
                     });
 
                     //returns the new object
@@ -72,11 +73,12 @@ namespace EcoLease_API.Repositories
         //removes one by ID
         public async Task Remove(int id)
         {
-            //query for delete agreement by ID
-            string query = @"DELETE FROM Agreements WHERE sID = @id";
+            //query for delete agreement by reservationID
+            string query = @"DELETE FROM Agreements WHERE reservationID = @id";
 
             try
             {
+                //connects
                 using (var connection = new SqlConnection(_connectionString))
                 {
                     //runs the query

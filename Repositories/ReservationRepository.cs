@@ -34,7 +34,7 @@ namespace EcoLease_API.Repositories
                 //connects
                 using (var connection = new SqlConnection(_connectionString))
                 {
-                    //runs the query with mapping: the query result contains 3 objects, with mapping it returns only the Request objects as a list what contains the other 2 objects
+                    //runs the query with mapping: the result contains 3 types, with mapping it returns the Reservation with the Vehicle and Customer type properties
                     //splitOn where the other two table begins (ID`s) -> this slices the query so able to map the slices to different objects
                     var reservations = await connection.QueryAsync<Reservation, Customer, Vehicle, Reservation>(query, (reservation, customer, vehicle) =>
                     {
@@ -103,7 +103,7 @@ namespace EcoLease_API.Repositories
                 { 
                     //runs the query what returns the new reservations ID
                     //and the function returns the reservation with the new ID
-                    reservation.RId =  await con.ExecuteScalarAsync<int>(query, reservation);
+                    reservation.RID =  await con.ExecuteScalarAsync<int>(query, reservation);
                     return reservation;
                 }
             }
@@ -134,10 +134,10 @@ namespace EcoLease_API.Repositories
                     var a = new
                     {
                         status = reservation.Status,
-                        vID = reservation.Vehicle.VId,
+                        vID = reservation.Vehicle.VID,
                         lBegin = reservation.LeaseBegin,
                         lLast = reservation.LeaseLast,
-                        rID = reservation.RId
+                        rID = reservation.RID
                     };
                     await connection.ExecuteScalarAsync(query, a);
                 }

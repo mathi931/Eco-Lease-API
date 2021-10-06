@@ -7,7 +7,7 @@ namespace EcoLease_API.Models
 {
     public class Status
     {
-        public int SId { get; set; }
+        public int SID { get; set; }
         public string Name { get; set; }
     }
 }

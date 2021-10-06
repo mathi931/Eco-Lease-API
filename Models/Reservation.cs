@@ -7,7 +7,7 @@ namespace EcoLease_API.Models
 {
     public class Reservation
     {
-        public int RId { get; set; }
+        public int RID { get; set; }
         public DateTime LeaseBegin { get; set; }
         public DateTime LeaseLast { get; set; }
         public string Status { get; set; }

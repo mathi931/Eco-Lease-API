@@ -11,11 +11,11 @@ namespace EcoLease_API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ReservationController : ControllerBase
+    public class ReservationsController : ControllerBase
     {
         private readonly IReservationRepository _reservationRepository;
 
-        public ReservationController(IReservationRepository requestRepository)
+        public ReservationsController(IReservationRepository requestRepository)
         {
             _reservationRepository = requestRepository;
         }
@@ -39,14 +39,14 @@ namespace EcoLease_API.Controllers
         public async Task<ActionResult<Reservation>>PostRequest([FromBody] Reservation request)
         {
             var newRequest = await _reservationRepository.Insert(request);
-            return CreatedAtAction(nameof(GetReservation), new { id = newRequest.RId }, newRequest);
+            return CreatedAtAction(nameof(GetReservation), new { id = newRequest.RID }, newRequest);
         }
 
         // PUT api/Reservations
         [HttpPut]
         public async Task<ActionResult> UpdateReservations(int id, [FromBody] Reservation reservation)
         {
-            if (id != reservation.RId)
+            if (id != reservation.RID)
             {
                 return BadRequest();
             }
@@ -67,7 +67,7 @@ namespace EcoLease_API.Controllers
             }
             else
             {
-                await _reservationRepository.Remove(reservationToDelete.RId);
+                await _reservationRepository.Remove(reservationToDelete.RID);
                 return NoContent();
             }
         }

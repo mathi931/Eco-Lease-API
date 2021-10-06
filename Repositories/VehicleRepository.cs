@@ -30,7 +30,7 @@ namespace EcoLease_API.Repositories
 
             try
             {
-                //open connection in try-catch with DataAccesHelper class to avoid connection string to be shown
+                //connects
                 using (var connection = new SqlConnection(_connectionString))
                 {
                     //returns the List of vehicles
@@ -56,7 +56,7 @@ namespace EcoLease_API.Repositories
                              WHERE v.vID = @id";
             try
             {
-                //open connection in try-catch with DataAccesHelper class to avoid connection string to be shown
+                //connects
                 using (var connection = new SqlConnection(_connectionString))
                 {
                     //runs the query
@@ -80,11 +80,11 @@ namespace EcoLease_API.Repositories
             //
             try
             {
-                //open connection in try-catch with DataAccesHelper class to avoid connection string to be shown
+                //connects
                 using (var connection = new SqlConnection(_connectionString))
                 {
                     //runs the query
-                    vehicle.VId = await connection.ExecuteScalarAsync<int>(query, vehicle);
+                    vehicle.VID = await connection.ExecuteScalarAsync<int>(query, vehicle);
                     //var v =  new Vehicle(id, vehicle.Make,vehicle.Model,vehicle.Registered, vehicle.PlateNo, vehicle.Km, vehicle.Notes, vehicle.Img,vehicle.Price, vehicle.Status);
 
                     return vehicle;
@@ -106,7 +106,7 @@ namespace EcoLease_API.Repositories
 
             try
             {
-                //open connection in try-catch with DataAccesHelper class to avoid connection string to be shown
+                //connects
                 using (var connection = new SqlConnection(_connectionString))
                 {
                     //runs the query

@@ -38,15 +38,15 @@ namespace EcoLease_API.Controllers
         [HttpPost]
         public async Task<ActionResult<Vehicle>>InsertVehicle([FromBody] Vehicle vehicle)
         {
-            var newVehicle = await _vehicleRepository.Insert(vehicle) as Vehicle;
-            return CreatedAtAction(nameof(GetVehicle), new { id = newVehicle.VId }, newVehicle);
+            var newVehicle = await _vehicleRepository.Insert(vehicle);
+            return CreatedAtAction(nameof(GetVehicle), new { id = newVehicle.VID }, newVehicle);
         }
 
         // PUT api/Vehicles
         [HttpPut]
         public async Task<ActionResult> UpdateVehicle(int id, [FromBody] Vehicle vehicle)
         {
-            if (id != vehicle.VId)
+            if (id != vehicle.VID)
             {
                 return BadRequest();
             }
@@ -60,7 +60,7 @@ namespace EcoLease_API.Controllers
         [HttpPatch]
         public async Task<ActionResult> UpdateVehicleStatus(int id, [FromBody] Vehicle vehicle)
         {
-            if (id != vehicle.VId)
+            if (id != vehicle.VID)
             {
                 return BadRequest();
             }
@@ -72,7 +72,7 @@ namespace EcoLease_API.Controllers
 
         // DELETE api/Vehicles
         [HttpDelete("{id}")]
-        public async Task<ActionResult> Delete (int id)
+        public async Task<ActionResult> RemoveVehicle (int id)
         {
             var vehicleToDelete = await _vehicleRepository.GetByID(id);
             if(vehicleToDelete == null)
@@ -81,7 +81,7 @@ namespace EcoLease_API.Controllers
             }
             else
             {
-                await _vehicleRepository.Remove(vehicleToDelete.VId);
+                await _vehicleRepository.Remove(vehicleToDelete.VID);
                 return NoContent();
             }
         }

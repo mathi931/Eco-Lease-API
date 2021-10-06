@@ -8,7 +8,7 @@ namespace EcoLease_API.Repositories
 {
     public interface IAgreementRepository
     {
-        Task<Agreement> GetByID(int id);
+        Task<Agreement> GetByID(int ReservationID);
         Task<Agreement> Insert(Agreement agreement);
         Task Remove(int id);
     }
