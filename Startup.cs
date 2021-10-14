@@ -1,4 +1,5 @@
 using EcoLease_API.Repositories;
+using EcoLease_API.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -47,6 +48,8 @@ namespace EcoLease_API
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "EcoLeaseAPI", Version = "v1" });
             });
+
+            services.AddTransient<IFileService, FileService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

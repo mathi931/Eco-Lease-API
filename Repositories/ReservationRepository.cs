@@ -170,5 +170,28 @@ namespace EcoLease_API.Repositories
                 throw new InvalidOperationException("Data could not be delete", exp);
             }
         }
+
+        public async Task UpdateStatus(int id, string status)
+        {
+            //query for update dates, status, vehicle id (customer can not change)
+            string query = @"UPDATE Reservations
+                            SET statusID = (SELECT s.sID FROM Statuses as s WHERE s.name = @status)
+                            WHERE rID = @id;";
+            try
+            {
+                //connects
+                using (var connection = new SqlConnection(_connectionString))
+                {
+                    //runs the query with the id and statusName
+                    await connection.ExecuteScalarAsync(query, new { status = status, id = id});
+                }
+            }
+            catch (Exception exp)
+            {
+
+                throw new Exception("Data could not be update", exp);
+            }
+
+        }
     }
 }

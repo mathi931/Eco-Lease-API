@@ -42,7 +42,7 @@ namespace EcoLease_API.Controllers
             return CreatedAtAction(nameof(GetVehicle), new { id = newVehicle.VID }, newVehicle);
         }
 
-        // PUT api/Vehicles
+        // PUT api/Vehicles/
         [HttpPut]
         public async Task<ActionResult> UpdateVehicle(int id, [FromBody] Vehicle vehicle)
         {
@@ -56,8 +56,8 @@ namespace EcoLease_API.Controllers
             return NoContent();
         }
 
-        // PATCH api/Vehicles
-        [HttpPatch]
+        // PUT api/Vehicles/status
+        [HttpPut("status")]
         public async Task<ActionResult> UpdateVehicleStatus(int id, [FromBody] Vehicle vehicle)
         {
             if (id != vehicle.VID)

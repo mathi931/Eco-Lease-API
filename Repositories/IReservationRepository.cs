@@ -12,6 +12,7 @@ namespace EcoLease_API.Repositories
         Task<Reservation> GetByID(int id);
         Task<Reservation> Insert(Reservation reservation);
         Task Update(Reservation reservation);
+        Task UpdateStatus(int id, string status);
         Task Remove(int id);
 
     }

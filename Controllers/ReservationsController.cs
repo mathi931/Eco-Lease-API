@@ -44,7 +44,7 @@ namespace EcoLease_API.Controllers
 
         // PUT api/Reservations
         [HttpPut]
-        public async Task<ActionResult> UpdateReservations(int id, [FromBody] Reservation reservation)
+        public async Task<ActionResult> UpdateReservation(int id, [FromBody] Reservation reservation)
         {
             if (id != reservation.RID)
             {
@@ -52,6 +52,20 @@ namespace EcoLease_API.Controllers
             }
 
             await _reservationRepository.Update(reservation);
+
+            return NoContent();
+        }
+
+        //PUT api/Reservations/status
+        [HttpPut("status")]
+        public async Task<ActionResult> UpdateReservationStatus(int id, [FromBody] string status)
+        {
+            var reservationToUpdate = await _reservationRepository.GetByID(id);
+            if (reservationToUpdate == null)
+            {
+                return BadRequest();
+            }
+            await _reservationRepository.UpdateStatus(id, status);
 
             return NoContent();
         }
