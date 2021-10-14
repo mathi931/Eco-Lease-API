@@ -28,6 +28,7 @@ namespace EcoLease_API.Controllers
         [HttpGet("{fileName}")]
         public IActionResult GetFile(string fileName)
         {
+
             try
             {
                 var(fileType, fileData) = _fileService.GetFile(fileName);
@@ -41,11 +42,11 @@ namespace EcoLease_API.Controllers
 
         // POST api/Files/upload
         [HttpPost("upload")]
-        public IActionResult UploadImage([Required] IFormFile formFile)
+        public IActionResult UploadImage(IFormFile file)
         {
             try
             {
-                _fileService.UploadFile(formFile);
+                _fileService.UploadFile(file);
 
                 return Ok();
             }
