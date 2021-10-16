@@ -22,8 +22,10 @@ namespace EcoLease_API.Services
             _hostingEnvironment = hostingEnvironment;
         }
 
-        public void UploadFile(IFormFile file)
+        public bool UploadFile(IFormFile file)
         {
+            bool uploaded = true;
+
             //declare the main root
             var path = _hostingEnvironment.ContentRootPath;
 
@@ -41,8 +43,8 @@ namespace EcoLease_API.Services
             }
             else
             {
+                uploaded = false;
                 //if there is no file or its not pdf or jpg, returns
-                return;
             }
 
             //if the directory does not exist creates one
@@ -59,6 +61,8 @@ namespace EcoLease_API.Services
             {
                 file.CopyTo(stream);
             }
+
+            return uploaded;
         }
 
         public (string fileType, byte[] fileData) GetFile(string fileName)
@@ -81,6 +85,10 @@ namespace EcoLease_API.Services
                 subPath = "Agreements/";
                 contentType = "application/pdf";
             }
+            else
+            {
+                throw new Exception("Wrong file!");
+            }
 
             //creates the path depends on file
             var filePath = $"{Path.Combine(_hostingEnvironment.ContentRootPath, $"App_Data/{subPath}")}{fileName}";
@@ -98,6 +106,30 @@ namespace EcoLease_API.Services
 
             //returns the type and the file in byte array
             return (contentType, bytes);
+        }
+
+        public bool RemoveFile(string fileName)
+        {
+            var path = "";
+
+            //if its an image
+            if (fileName.Contains("jpg"))
+            {
+                path = Path.Combine(_hostingEnvironment.ContentRootPath, "App_Data", "Images", fileName);
+            }
+            //if its a pdf
+            else if (fileName.Contains("pdf"))
+            {
+                path = Path.Combine(_hostingEnvironment.ContentRootPath, "App_Data", "Agreements", fileName);
+            }
+
+            //if the file exists delete 
+            if (File.Exists(path))
+            {
+                File.Delete(path);
+                return true;
+            }
+            return false;
         }
     }
 }

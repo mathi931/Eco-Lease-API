@@ -46,9 +46,29 @@ namespace EcoLease_API.Controllers
         {
             try
             {
-                _fileService.UploadFile(file);
+                if (_fileService.UploadFile(file))
+                {
+                    return Ok();
+                }
 
-                return Ok();
+                return BadRequest();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+        
+        [HttpDelete("{fileName}")]
+        public IActionResult RemoveFile(string fileName)
+        {
+            try
+            {
+                if (_fileService.RemoveFile(fileName))
+                {
+                    return Ok();
+                }
+                return BadRequest("File does not exist!");
             }
             catch (Exception ex)
             {

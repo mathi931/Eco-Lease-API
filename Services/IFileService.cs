@@ -10,8 +10,10 @@ namespace EcoLease_API.Services
 {
     public interface IFileService
     {
-        void UploadFile(IFormFile file);
+        bool UploadFile(IFormFile file);
 
         (string fileType, byte[] fileData) GetFile(string fileName);
+
+        bool RemoveFile(string fileName);
     }
 }
