@@ -98,7 +98,7 @@ namespace EcoLease_API.Services
                 // Throw 404(Not Found) exception if File not found.
             response.StatusCode = HttpStatusCode.NotFound;
                 response.ReasonPhrase = $"File not found: {fileName} .";
-                throw new HttpResponseException(response);
+                throw new Exception(response.RequestMessage.ToString());
             }
 
             //Read the File into a Byte Array.

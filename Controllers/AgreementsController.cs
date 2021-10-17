@@ -1,5 +1,7 @@
 ﻿using EcoLease_API.Models;
 using EcoLease_API.Repositories;
+using EcoLease_API.Validators;
+using FluentValidation.Results;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -23,10 +25,20 @@ namespace EcoLease_API.Controllers
             _reservationRepository = reservationRepository;
         }
 
+        //instance of validator
+        IDValidator validatorID = new IDValidator();
+        FileValidator validatorFileName = new FileValidator();
+
         // GET api/Agreements/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Agreement>> GetAgreement(int id)
         {
+            ValidationResult validation = validatorID.Validate(id);
+            if (!validation.IsValid)
+            {
+                return BadRequest("Wrong Parameters!");
+            }
+
             var agrWithoutReservation = await _agreementRepository.GetByID(id);
 
             return new Agreement {
@@ -41,6 +53,13 @@ namespace EcoLease_API.Controllers
         [HttpPost]
         public async Task<ActionResult<Agreement>> InsertAgreement([FromBody] Agreement agreement)
         {
+            ValidationResult validationID = validatorID.Validate(agreement.Reservation.RID);
+            ValidationResult validationFileName = validatorFileName.Validate(agreement.FileName);
+            if (!validationID.IsValid || !validationFileName.IsValid)
+            {
+                return BadRequest("Wrong Parameters!");
+            }
+
             var newAgreement = await _agreementRepository.Insert(agreement);
             newAgreement.Reservation = await _reservationRepository.GetByID(agreement.Reservation.RID);
             return CreatedAtAction(nameof(GetAgreement), new { id = newAgreement.AID }, newAgreement);
@@ -50,6 +69,12 @@ namespace EcoLease_API.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult> RemoveAgreement(int id)
         {
+            ValidationResult validation = validatorID.Validate(id);
+            if (!validation.IsValid)
+            {
+                return BadRequest("Wrong Parameters!");
+            }
+
             var agreementToDelete = await _agreementRepository.GetByID(id);
             if (agreementToDelete == null)
             {

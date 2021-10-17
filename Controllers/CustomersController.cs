@@ -1,11 +1,13 @@
 ﻿using EcoLease_API.Models;
 using EcoLease_API.Repositories;
+using EcoLease_API.Validators;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using FluentValidation.Results;
 
 namespace EcoLease_API.Controllers
 {
@@ -20,6 +22,10 @@ namespace EcoLease_API.Controllers
             _customerRepository = userRepository;
         }
 
+        //instance of validator
+        CustomerValidator validatorReservation = new CustomerValidator();
+        IDValidator validatorID = new IDValidator();
+
         // GET api/Customers
         [HttpGet]
         public async Task<IEnumerable<Customer>> GetCustomers()
@@ -31,6 +37,14 @@ namespace EcoLease_API.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Customer>> GetCustomer(int id)
         {
+            ValidationResult validation = validatorID.Validate(id);
+            if (!validation.IsValid)
+            {
+                return BadRequest("Wrong Parameters!");
+
+            }
+            //after validation
+
             return await _customerRepository.GetByID(id);
         }
 
@@ -38,6 +52,13 @@ namespace EcoLease_API.Controllers
         [HttpPost]
         public async Task<ActionResult<Customer>>InsertCustomer([FromBody] Customer customer)
         {
+            ValidationResult validation = validatorReservation.Validate(customer);
+            if (!validation.IsValid)
+            {
+                return BadRequest("Wrong Parameters!");
+            }
+
+            //after validation
             var newCustomer = await _customerRepository.Insert(customer);
             return CreatedAtAction(nameof(GetCustomer), new { id = newCustomer.CID }, newCustomer);
         }
@@ -47,11 +68,15 @@ namespace EcoLease_API.Controllers
         public async Task<ActionResult> UpdateCustomer
             (int id, [FromBody] Customer customer)
         {
-            if (id != customer.CID)
+            ValidationResult validation = validatorReservation.Validate(customer);
+            ValidationResult validationID = validatorID.Validate(id);
+
+            if (!validationID.IsValid || !validation.IsValid || id != customer.CID)
             {
                 return BadRequest();
             }
 
+            //after validation
             await _customerRepository.Update(customer);
 
             return NoContent();
@@ -61,6 +86,14 @@ namespace EcoLease_API.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult> RemoveCustomer(int id)
         {
+            ValidationResult validationID = validatorID.Validate(id);
+
+            if (!validationID.IsValid)
+            {
+                return BadRequest();
+            }
+
+            //after validation
             var customerToDelete = await _customerRepository.GetByID(id);
             if (customerToDelete == null)
             {

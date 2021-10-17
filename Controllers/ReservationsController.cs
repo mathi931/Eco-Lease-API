@@ -1,5 +1,7 @@
 ﻿using EcoLease_API.Models;
 using EcoLease_API.Repositories;
+using EcoLease_API.Validators;
+using FluentValidation.Results;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -20,6 +22,12 @@ namespace EcoLease_API.Controllers
             _reservationRepository = requestRepository;
         }
 
+
+
+        //instance of validator
+        ReservationValidator validatorReservation = new ReservationValidator();
+        IDValidator validatorID = new IDValidator();
+
         // GET api/Reservations
         [HttpGet]
         public async Task<IEnumerable<Reservation>> GetReservations()
@@ -31,6 +39,12 @@ namespace EcoLease_API.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Reservation>> GetReservation(int id)
         {
+            ValidationResult validation = validatorID.Validate(id);
+            if (!validation.IsValid)
+            {
+                return BadRequest("Wrong Parameters!");
+            }
+
             return await _reservationRepository.GetByID(id);
         }
 
@@ -38,6 +52,11 @@ namespace EcoLease_API.Controllers
         [HttpPost]
         public async Task<ActionResult<Reservation>>PostRequest([FromBody] Reservation request)
         {
+            ValidationResult validation = validatorReservation.Validate(request);
+            if (!validation.IsValid)
+            {
+                return BadRequest("Wrong Parameters!");
+            }
             var newRequest = await _reservationRepository.Insert(request);
             return CreatedAtAction(nameof(GetReservation), new { id = newRequest.RID }, newRequest);
         }
@@ -46,9 +65,17 @@ namespace EcoLease_API.Controllers
         [HttpPut]
         public async Task<ActionResult> UpdateReservation(int id, [FromBody] Reservation reservation)
         {
-            if (id != reservation.RID)
+            ValidationResult validation = validatorReservation.Validate(reservation);
+            ValidationResult validationID = validatorID.Validate(id);
+
+            if (id != reservation.RID || !validationID.IsValid)
             {
-                return BadRequest();
+                return BadRequest("Wrong Parameters!");
+            }
+
+            if (!validation.IsValid)
+            {
+                return BadRequest("Wrong Parameters!");
             }
 
             await _reservationRepository.Update(reservation);
@@ -60,6 +87,12 @@ namespace EcoLease_API.Controllers
         [HttpPut("status")]
         public async Task<ActionResult> UpdateReservationStatus(int id, [FromBody] string status)
         {
+            ValidationResult validationID = validatorID.Validate(id);
+            if (!validationID.IsValid)
+            {
+                return BadRequest("Wrong Parameters!");
+            }
+
             var reservationToUpdate = await _reservationRepository.GetByID(id);
             if (reservationToUpdate == null)
             {
@@ -74,6 +107,12 @@ namespace EcoLease_API.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult> Delete(int id)
         {
+            ValidationResult validationID = validatorID.Validate(id);
+            if (!validationID.IsValid)
+            {
+                return BadRequest("Wrong Parameters!");
+            }
+
             var reservationToDelete = await _reservationRepository.GetByID(id);
             if (reservationToDelete == null)
             {

@@ -1,10 +1,12 @@
 ﻿using EcoLease_API.Models;
 using EcoLease_API.Repositories;
+using EcoLease_API.Validators;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using FluentValidation.Results;
 
 
 namespace EcoLease_API.Controllers
@@ -20,6 +22,9 @@ namespace EcoLease_API.Controllers
             _vehicleRepository = vehicleRepository;
         }
 
+        VehicleValidator validatorVehicle = new VehicleValidator();
+        IDValidator validatorID = new IDValidator();
+
         // GET api/Vehicles
         [HttpGet]
         public async Task<IEnumerable<Vehicle>> GetVehicles()
@@ -31,6 +36,13 @@ namespace EcoLease_API.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Vehicle>> GetVehicle(int id)
         {
+            ValidationResult validation = validatorID.Validate(id);
+
+            if (!validation.IsValid)
+            {
+                return BadRequest("Wrong Parameters!");
+            }
+
             return await _vehicleRepository.GetByID(id);
         }
 
@@ -38,6 +50,13 @@ namespace EcoLease_API.Controllers
         [HttpPost]
         public async Task<ActionResult<Vehicle>>InsertVehicle([FromBody] Vehicle vehicle)
         {
+            ValidationResult validation = validatorVehicle.Validate(vehicle);
+
+            if (!validation.IsValid)
+            {
+                return BadRequest("Wrong Parameters!");
+            }
+
             var newVehicle = await _vehicleRepository.Insert(vehicle);
             return CreatedAtAction(nameof(GetVehicle), new { id = newVehicle.VID }, newVehicle);
         }
@@ -46,11 +65,14 @@ namespace EcoLease_API.Controllers
         [HttpPut]
         public async Task<ActionResult> UpdateVehicle(int id, [FromBody] Vehicle vehicle)
         {
-            if (id != vehicle.VID)
+            ValidationResult validationVehicle = validatorVehicle.Validate(vehicle);
+            ValidationResult validationID = validatorID.Validate(id);
+
+            if (id != vehicle.VID || !validationID.IsValid || !validationVehicle.IsValid)
             {
                 return BadRequest();
             }
-     
+
             await _vehicleRepository.Update(vehicle);
 
             return NoContent();
@@ -60,7 +82,9 @@ namespace EcoLease_API.Controllers
         [HttpPut("status")]
         public async Task<ActionResult> UpdateVehicleStatus(int id, [FromBody] Vehicle vehicle)
         {
-            if (id != vehicle.VID)
+            ValidationResult validationID = validatorID.Validate(id);
+
+            if (id != vehicle.VID || !validationID.IsValid)
             {
                 return BadRequest();
             }
@@ -74,8 +98,14 @@ namespace EcoLease_API.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult> RemoveVehicle (int id)
         {
+            ValidationResult validationID = validatorID.Validate(id);
+            if (!validationID.IsValid)
+            {
+                return BadRequest();
+            }
+
             var vehicleToDelete = await _vehicleRepository.GetByID(id);
-            if(vehicleToDelete == null)
+            if(vehicleToDelete == null || !validationID.IsValid)
             {
                 return NotFound();
             }

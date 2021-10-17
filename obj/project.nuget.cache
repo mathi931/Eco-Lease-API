@@ -1,10 +1,11 @@
 {
   "version": 2,
-  "dgSpecHash": "MI4eMav6lZUCu+WD7MluduJYN9Lcys5riyvqBmr2W3TQVz51pKl9A2o832pd9/DFoeAUcZZyXIRGiUPG+jH5EA==",
+  "dgSpecHash": "C4Jw05344T7qoDAk54sNIllt+8rbv7LhlREHriVwCELT8O9a1UeycxktoEvlUDxJEeOmvAEIoEjtxalPINS8RQ==",
   "success": true,
   "projectFilePath": "C:\\Users\\Meszi\\source\\repos\\EcoLease-API\\EcoLease-API.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Meszi\\.nuget\\packages\\dapper\\2.0.90\\dapper.2.0.90.nupkg.sha512",
+    "C:\\Users\\Meszi\\.nuget\\packages\\fluentvalidation\\10.3.3\\fluentvalidation.10.3.3.nupkg.sha512",
     "C:\\Users\\Meszi\\.nuget\\packages\\microsoft.aspnetcore.jsonpatch\\5.0.10\\microsoft.aspnetcore.jsonpatch.5.0.10.nupkg.sha512",
     "C:\\Users\\Meszi\\.nuget\\packages\\microsoft.aspnetcore.mvc.newtonsoftjson\\5.0.10\\microsoft.aspnetcore.mvc.newtonsoftjson.5.0.10.nupkg.sha512",
     "C:\\Users\\Meszi\\.nuget\\packages\\microsoft.csharp\\4.7.0\\microsoft.csharp.4.7.0.nupkg.sha512",
