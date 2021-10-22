@@ -26,7 +26,6 @@ C:\Users\Meszi\source\repos\EcoLease-API\obj\Debug\net5.0\staticwebassets\EcoLea
 C:\Users\Meszi\source\repos\EcoLease-API\obj\Debug\net5.0\staticwebassets\EcoLease-API.StaticWebAssets.xml
 C:\Users\Meszi\source\repos\EcoLease-API\obj\Debug\net5.0\scopedcss\bundle\EcoLease-API.styles.css
 C:\Users\Meszi\source\repos\EcoLease-API\obj\Debug\net5.0\EcoLease-API.RazorTargetAssemblyInfo.cache
-C:\Users\Meszi\source\repos\EcoLease-API\obj\Debug\net5.0\EcoLease-API.csproj.CopyComplete
 C:\Users\Meszi\source\repos\EcoLease-API\obj\Debug\net5.0\EcoLease-API.dll
 C:\Users\Meszi\source\repos\EcoLease-API\obj\Debug\net5.0\ref\EcoLease-API.dll
 C:\Users\Meszi\source\repos\EcoLease-API\obj\Debug\net5.0\EcoLease-API.pdb

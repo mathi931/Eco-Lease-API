@@ -53,10 +53,14 @@ namespace EcoLease_API.Controllers
         public async Task<ActionResult<Reservation>>PostRequest([FromBody] Reservation request)
         {
             ValidationResult validation = validatorReservation.Validate(request);
-            if (!validation.IsValid)
+            ValidationResult validationCustomerID = validatorID.Validate(request.Customer.CID);
+            ValidationResult validationVehicleID = validatorID.Validate(request.Vehicle.VID);
+
+            if (!validation.IsValid || !validationCustomerID.IsValid || !validationVehicleID.IsValid)
             {
                 return BadRequest("Wrong Parameters!");
             }
+
             var newRequest = await _reservationRepository.Insert(request);
             return CreatedAtAction(nameof(GetReservation), new { id = newRequest.RID }, newRequest);
         }

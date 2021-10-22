@@ -21,7 +21,9 @@ namespace EcoLease_API.Validators
                 .NotEmpty().WithMessage("{PropertyName} is Empty")
                 .Must(BeAValidEndDate).WithMessage("{PropertyName} is not correct!");
 
-            RuleFor(v => v.Status).NotEmpty().WithMessage("{PropertyName} is Empty");
+            RuleFor(v => v.Status)
+                .NotEmpty().WithMessage("{PropertyName} is Empty");
+                
 
         }
         protected bool BeAValidStartDate(DateTime date)

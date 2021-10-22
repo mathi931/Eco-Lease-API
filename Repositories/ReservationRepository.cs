@@ -93,8 +93,7 @@ namespace EcoLease_API.Repositories
         public async Task<Reservation> Insert(Reservation reservation)
         {
             //query for create a new reservation
-            var query = @"INSERT INTO Reservations (leaseBegin, leaseLast, statusID, customerID, vehicleID) values(@lBegin, @lLast, (SELECT sID FROM Statuses WHERE name = @status), @customerID, @vehicleID); 
-                          SELECT SCOPE_IDENTITY()";
+            var query = @"INSERT INTO Reservations (leaseBegin, leaseLast, statusID, customerID, vehicleID) values(@LeaseBegin, @LeaseLast, (SELECT sID FROM Statuses WHERE name = @Status), @CID, @VID) SELECT IDENT_CURRENT('Reservations')";
 
             try
             {
@@ -103,7 +102,14 @@ namespace EcoLease_API.Repositories
                 { 
                     //runs the query what returns the new reservations ID
                     //and the function returns the reservation with the new ID
-                    reservation.RID =  await con.ExecuteScalarAsync<int>(query, reservation);
+                    reservation.RID =  await con.ExecuteScalarAsync<int>(query, 
+                        new {
+                        LeaseBegin = reservation.LeaseBegin,
+                        LeaseLast = reservation.LeaseLast,
+                        Status = reservation.Status,
+                        CID = reservation.Customer.CID,
+                        VID = reservation.Vehicle.VID
+                        });
                     return reservation;
                 }
             }
